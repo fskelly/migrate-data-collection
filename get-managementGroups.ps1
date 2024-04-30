@@ -1,3 +1,12 @@
+function Log-ErrorToFile {
+    param (
+        [string]$Message
+    )
+    $dateTimestamp = Get-Date -Format "yyyy-MM-dd_HH-mm-ss"
+    $errorLogPath = Join-Path -Path $HOME -ChildPath ("errorLog_" + $dateTimestamp + ".txt")
+    $Message | Out-File -FilePath $errorLogPath -Append
+}
+
 # PowerShell script to list all Azure Management Groups
 
 # Login to Azure Account
@@ -9,7 +18,8 @@ $mgmtGroups = Get-AzManagementGroup -ErrorVariable mgmtcheck -ErrorAction Silent
 
 if ($mgmtcheck) {
     Write-Error "An error occurred while retrieving the management groups: $mgmtcheck"
-    return
+    Log-ErrorToFile "An error occurred while retrieving the management groups: $mgmtCheck"
+    #return
 }
 
 try {
@@ -35,6 +45,15 @@ catch {
     Write-Error "An error occurred: $_"
 }
 
+##==========================================
+function Log-ErrorToFile {
+    param (
+        [string]$Message
+    )
+    $dateTimestamp = Get-Date -Format "yyyy-MM-dd_HH-mm-ss"
+    $errorLogPath = Join-Path -Path $HOME -ChildPath ("errorLog_" + $dateTimestamp + ".txt")
+    $Message | Out-File -FilePath $errorLogPath -Append
+}
 # PowerShell script to list all Azure Management Groups
 
 # Login to Azure Account
@@ -45,8 +64,8 @@ Update-AzConfig -DisplayBreakingChangeWarning $false #until change happens
 $mgmtGroups = Get-AzManagementGroup -ErrorVariable mgmtcheck -ErrorAction SilentlyContinue
 
 if ($mgmtcheck) {
-    Write-Error "An error occurred while retrieving the management groups: $mgmtcheck"
-    return
+    Log-ErrorToFile "An error occurred while retrieving the management groups: $mgmtCheck"
+    #return
 }
 # Initialize an array to hold management group objects
 $managementGroupObjects = @()
@@ -87,5 +106,6 @@ catch {
 
 # $managementGroupObjects now contains all management group information along with their subscriptions
 # You can output or process $managementGroupObjects as needed
+$managementGroupObjects
 ## ($managementGroupObjects[2].Subscriptions).SubscriptionId - example
 ## ($managementGroupObjects[2].Subscriptions).State - example
