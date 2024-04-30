@@ -1,4 +1,4 @@
-function Log-ErrorToFile {
+function Write-ErrorToFile {
     param (
         [string]$Message
     )
@@ -35,7 +35,7 @@ foreach ($subscription in $subscriptions) {
         }
     } catch {
         # Write the error to a log file and continue with the script
-        Log-ErrorToFile "An unexpected error occurred: $_"
+        Write-ErrorToFile "An unexpected error occurred: $_"
     }
 }
 
@@ -53,7 +53,7 @@ foreach ($resourceGroupObject in $resourceGroupObjects) {
 
         if ($resourceCheck) {
             Write-Error "An error occurred while retrieving the Resources in : $rgName in subscription: $($resourceGroupObject.SubscriptionName)"
-            Log-ErrorToFile "An error occurred while retrieving the Resources in : $rgName in subscription: $($resourceGroupObject.SubscriptionName)"
+            Write-ErrorToFile "An error occurred while retrieving the Resources in : $rgName in subscription: $($resourceGroupObject.SubscriptionName)"
             #return
         }
 
