@@ -1,4 +1,4 @@
-function Log-ErrorToFile {
+function Write-ErrorToFile {
     param (
         [string]$Message
     )
@@ -18,7 +18,7 @@ $mgmtGroups = Get-AzManagementGroup -ErrorVariable mgmtcheck -ErrorAction Silent
 
 if ($mgmtcheck) {
     Write-Error "An error occurred while retrieving the management groups: $mgmtcheck"
-    Log-ErrorToFile "An error occurred while retrieving the management groups: $mgmtCheck"
+    Write-ErrorToFile "An error occurred while retrieving the management groups: $mgmtCheck"
     #return
 }
 
@@ -27,7 +27,7 @@ try {
     foreach ($mgmtGroup in $mgmtGroups)                                          
     {
         Get-AzManagementGroupSubscription -GroupName $mgmtGroup.Name | ForEach-Object {
-            $subscription = $_
+            #$subscription = $_
             $subscriptionInfo = (Get-AzSubscription -SubscriptionName ${subscriptionName})
             #$subscriptionInfo
             $subscriptionId = $subscriptionInfo.Id
@@ -46,7 +46,7 @@ catch {
 }
 
 ##==========================================
-function Log-ErrorToFile {
+function Write-ErrorToFile {
     param (
         [string]$Message
     )
@@ -64,7 +64,7 @@ Update-AzConfig -DisplayBreakingChangeWarning $false #until change happens
 $mgmtGroups = Get-AzManagementGroup -ErrorVariable mgmtcheck -ErrorAction SilentlyContinue
 
 if ($mgmtcheck) {
-    Log-ErrorToFile "An error occurred while retrieving the management groups: $mgmtCheck"
+    Write-ErrorToFile "An error occurred while retrieving the management groups: $mgmtCheck"
     #return
 }
 # Initialize an array to hold management group objects
@@ -77,7 +77,7 @@ try {
         $subscriptionObjects = @()
 
         Get-AzManagementGroupSubscription -GroupName $mgmtGroup.Name | ForEach-Object {
-            $subscription = $_
+            #$subscription = $_
             $subscriptionInfo = (Get-AzSubscription -SubscriptionName ${subscription.Name})
             # Create a custom object for the current subscription
             $subscriptionObject = [PSCustomObject]@{

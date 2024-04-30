@@ -2,7 +2,7 @@
 
 - [x] 1. List Management Groups
 - [x] 2. List subscriptions
-- [ ] 3. List Resource Groups
+- [x] 3. List Resource Groups
 - [ ] 4. Get resources in RG
   - [ ] 1. VNet
   - [ ] 2. VMs
