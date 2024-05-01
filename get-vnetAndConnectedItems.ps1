@@ -60,8 +60,71 @@ foreach ($subscription in $subscriptions) {
     }
 }
 
-$vnetObjects
-
+## $vnetObjects
+$subnetObjects = @()
 ## get connected vnet items
-$result=Get-AzVirtualNetwork -Name $vnetObject.VirtualNetworkName  -ResourceGroupName $vnetObject.ResourceGroupName -ExpandResource 'subnets/ipConfigurations' 
-$result.Subnets[0].IpConfigurations
+foreach ($vnetObject in $vnetObjects) {
+    Write-Output "Processing vnet: $($vnetObject.VirtualNetworkName) in subscription: $($vnetObject.SubscriptionName)"
+    $vnet = Get-AzVirtualNetwork -Name $vnetObject.VirtualNetworkName -ResourceGroupName $vnetObject.ResourceGroupName -ExpandResource 'subnets/ipConfigurations'
+    # Retrieve subnets for the current VNet
+    $subnets = $vnet.Subnets
+    $subnets
+
+    # Check if there are multiple subnets
+    if ($subnets.Count -gt 1) {
+        Write-Output "Multiple subnets found in VNet: $($vnet.Name)"
+
+        # Example action for multiple subnets
+        foreach ($subnet in $subnets) {
+            Write-Host "Processing subnet: $($subnet.Name)"
+            # Add your processing logic here
+
+            # Create a PSObject for the current subnet
+            $subnetObject = New-Object PSObject -Property @{
+            VirtualNetworkName = $vnet.Name
+            Name = $subnet.Name
+            AddressPrefix = $subnet.AddressPrefix
+            IpConfigurationsCount = ($subnet.IpConfigurations | Measure-Object).Count
+            # Add more properties as needed
+        }
+
+        # Add the subnet object to the array
+        $subnetObjects += $subnetObject
+
+            if ($subnet.IpConfigurations -and $subnet.IpConfigurations.Count -gt 0 -and $subnet.IpConfigurations[0].PrivateIpAddress) {
+                Write-Output "Private IP Address is populated: $($subnet.IpConfigurations[0].PrivateIpAddress)"
+            } else {
+                Write-Warning "Private IP Address is not populated or the IpConfigurations array is empty."
+            }
+
+        }
+    } elseif ($subnets.Count -eq 1) {
+        Write-Host "Single subnet found in VNet: $($vnet.Name)"
+        # Processing for a single subnet
+        # Add your processing logic here
+        $subnet = $subnets[0]
+
+        # Create a PSObject for the current subnet
+        $subnetObject = New-Object PSObject -Property @{
+            VirtualNetworkName = $vnet.Name
+            Name = $subnet.Name
+            AddressPrefix = $subnet.AddressPrefix
+            IpConfigurationsCount = ($subnet.IpConfigurations | Measure-Object).Count
+            # Add more properties as needed
+        }
+
+        # Add the subnet object to the array
+        $subnetObjects += $subnetObject
+
+        if ($subnet.IpConfigurations -and $subnet.IpConfigurations.Count -gt 0 -and $subnet.IpConfigurations[0].PrivateIpAddress) {
+            Write-Output "Private IP Address is populated: $($subnet.IpConfigurations[0].PrivateIpAddress)"
+        } else {
+            Write-Warning "Private IP Address is not populated or the IpConfigurations array is empty."
+        }
+    } else {
+        Write-Warning "No subnets found in VNet: $($virtualNetwork.Name)"
+        # Handle the case where no subnets are present
+        # Add your processing logic here
+    }
+}
+$subnetObjects
