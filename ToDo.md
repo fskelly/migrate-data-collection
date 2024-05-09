@@ -4,9 +4,9 @@
 - [x] 2. List subscriptions
 - [x] 3. List Resource Groups
 - [ ] 4. Get resources in RG
-  - [ ] 1. VNet
-  - [ ] 2. VMs
-  - [ ] 3. Gateway
+  - [X] 1. VNet
+  - [X] 2. VMs
+  - [ ] 3. Gateway and PIPs
     - [ ] 1. VPN
     - [ ] 2. ExR
 - [ ] 5. Storage Accounts

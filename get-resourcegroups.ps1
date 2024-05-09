@@ -44,3 +44,5 @@ $errorLogPath = Join-Path -Path $HOME -ChildPath "errorLog.txt"
 
 # Write the error to the log file and continue with the script
 $_ | Out-File -FilePath $errorLogPath -Append
+
+return $resourceGroupObjects

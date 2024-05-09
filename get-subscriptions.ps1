@@ -54,3 +54,5 @@ catch {
 # You can output or process $subscriptionObjects as needed
 $subscriptionObjects
 
+# Return the subscriptions object
+return $subscriptions

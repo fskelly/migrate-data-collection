@@ -17,17 +17,36 @@ if ($subscriptionCheck) {
     #return
 }
 
-# Initialize an array to hold resource group objects
-$vnetObjects = @()
-$subnetObjects = @()
+# Initialize an array to hold gateway objects
+$gwObjects = @()
 
 foreach ($subscription in $subscriptions) {
     try {
         # Select the subscription
         Set-AzContext -SubscriptionId $subscription.Id
+        # Get resource groups in the current subscription
+        $resourceGroups = Get-AzResourceGroup
 
-        write-output "Processing subscription: $($subscription.Name)"
-
+        foreach ($resourceGroup in $resourceGroups) {
+            Get-AzVirtualNetworkGateway -ResourceGroupName $resourceGroup.ResourceGroupName | ForEach-Object {
+                $gwObject = [PSCustomObject]@{
+                    GatewayName = $_.Name
+                    GatewayType = $_.GatewayType
+                    GatewaySKU = $_.Sku.Name
+                    GatewayLocation = $_.Location
+                    ResourceGroupName = $resourceGroup.ResourceGroupName
+                    SubscriptionName = $subscription.Name
+                    PublicIPAddresses = $_.IpConfigurations.PublicIpAddress
+                }
+                $gwObjects += $gwObject
+            }
+        }
+    } catch {
+    # Write the error to a log file and continue with the script
+    Write-ErrorToFile "An unexpected error occurred: $_"
+    }
+}
+try {
         # Get resource groups in the current subscription
         $virtualNetworks = Get-AzVirtualNetwork 
 
@@ -59,17 +78,17 @@ foreach ($subscription in $subscriptions) {
         # Write the error to a log file and continue with the script
         Write-ErrorToFile "An unexpected error occurred: $_"
     }
-}
+
 
 ## $vnetObjects
-#$subnetObjects = @()
+$subnetObjects = @()
 ## get connected vnet items
 foreach ($vnetObject in $vnetObjects) {
     Write-Output "Processing vnet: $($vnetObject.VirtualNetworkName) in subscription: $($vnetObject.SubscriptionName)"
     $vnet = Get-AzVirtualNetwork -Name $vnetObject.VirtualNetworkName -ResourceGroupName $vnetObject.ResourceGroupName -ExpandResource 'subnets/ipConfigurations'
     # Retrieve subnets for the current VNet
     $subnets = $vnet.Subnets
-    #$subnets
+    $subnets
 
     # Check if there are multiple subnets
     if ($subnets.Count -gt 1) {
@@ -128,6 +147,4 @@ foreach ($vnetObject in $vnetObjects) {
         # Add your processing logic here
     }
 }
-
-Write-Output "Processed subnets are:"
 $subnetObjects
