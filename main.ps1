@@ -17,4 +17,27 @@ $subscriptions
 
 # Call the Get-ResourceGroups scriptcls
 $resourceGroups = . (Join-Path -Path $scriptPath -ChildPath "Get-resourcegroups.ps1")
-$resourceGroups
+
+# Call the script and capture the returned array or object
+$gatewayResults = . (Join-Path -Path $scriptPath -ChildPath "get-vngexrgatewayandpips.ps1")
+
+# Call the script and capture the returned array or object
+$resources = . (Join-Path -Path $scriptPath -ChildPath "get-resourcesInRG.ps1")
+
+$vnetsubnets = . (Join-Path -Path $scriptPath -ChildPath "get-vnetAndConnectedItems.ps1")
+
+# Remove empty or null items from the arrays
+$vnetObjects = $gatewayResults.vnetObjects | Where-Object { $_ -ne $null -and $_ -ne '' }
+$subnetObjects = $gatewayResults.SubnetObjects | Where-Object { $_ -ne $null -and $_ -ne '' }
+$gwIPObjects = $gatewayResults.GatewayIPObjects | Where-Object { $_ -ne $null -and $_ -ne '' }
+$gwObjects = $gatewayResults.GatewayObjects | Where-Object { $_ -ne $null -and $_ -ne '' }
+$subnetInfoObjects = $vnetsubnets.subnetObjects | Where-Object { $_ -ne $null -and $_ -ne '' }
+
+
+foreach ($item in $vnetObjects)
+{
+    write-host "Vnet Name: $($item.VirtualNetworkName)"
+    write-host "Vnet RG: $($item.ResourceGroupName)"
+    write-host "Vnet Location: $($item.Location)"
+    write-host "Vnet ID: $($item.VirtualNetworkID)"
+}

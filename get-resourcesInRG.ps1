@@ -78,3 +78,8 @@ foreach ($resourceGroupObject in $resourceGroupObjects) {
 
 # $allResources now contains information about all resources in all resource groups
 # You can output or process $allResources as needed
+
+return [PSCustomObject]@{
+    ResourceGroups = $resourceGroupObjects
+    Resources = $allResources
+}

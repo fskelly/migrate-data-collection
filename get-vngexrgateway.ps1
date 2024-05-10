@@ -74,10 +74,10 @@ try {
             # Append the resource group object to the array
             $vnetObjects += $vnetObject
         }
-    } catch {
-        # Write the error to a log file and continue with the script
-        Write-ErrorToFile "An unexpected error occurred: $_"
-    }
+} catch {
+    # Write the error to a log file and continue with the script
+    Write-ErrorToFile "An unexpected error occurred: $_"
+}
 
 
 ## $vnetObjects

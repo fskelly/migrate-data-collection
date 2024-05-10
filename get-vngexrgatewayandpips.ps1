@@ -1,3 +1,6 @@
+# TODO: Check if the script is working as expected.
+# TODO: Check if vnetobjects are populating as expected.
+
 function Write-ErrorToFile {
     param (
         [string]$Message
@@ -46,6 +49,8 @@ foreach ($subscription in $subscriptions) {
     Write-ErrorToFile "An unexpected error occurred: $_"
     }
 }
+$vnetObjects = @()
+
 try {
         # Get resource groups in the current subscription
         $virtualNetworks = Get-AzVirtualNetwork 
@@ -74,7 +79,8 @@ try {
             # Append the resource group object to the array
             $vnetObjects += $vnetObject
         }
-    } catch {
+    } 
+    catch {
         # Write the error to a log file and continue with the script
         Write-ErrorToFile "An unexpected error occurred: $_"
     }
@@ -88,7 +94,6 @@ foreach ($vnetObject in $vnetObjects) {
     $vnet = Get-AzVirtualNetwork -Name $vnetObject.VirtualNetworkName -ResourceGroupName $vnetObject.ResourceGroupName -ExpandResource 'subnets/ipConfigurations'
     # Retrieve subnets for the current VNet
     $subnets = $vnet.Subnets
-    $subnets
 
     # Check if there are multiple subnets
     if ($subnets.Count -gt 1) {
@@ -122,7 +127,6 @@ foreach ($vnetObject in $vnetObjects) {
         Write-Host "Single subnet found in VNet: $($vnet.Name)"
         # Processing for a single subnet
         # Add your processing logic here
-        $subnet = $subnets[0]
 
         # Create a PSObject for the current subnet
         $subnetObject = New-Object PSObject -Property @{
@@ -178,3 +182,12 @@ foreach ($gwObject in $gwObjects) {
 
 # Output the new objects
 $gatewayIPObjects
+
+# Return the subnetObjects and gatewayIPObjects as elements of an array
+# Return the subnetObjects and gatewayIPObjects as properties of a custom object
+return [PSCustomObject]@{
+    SubnetObjects = $subnetObjects
+    GatewayIPObjects = $gatewayIPObjects
+    vnetObjects = $vnetObjects
+    GatewayObjects = $gwObjects
+}

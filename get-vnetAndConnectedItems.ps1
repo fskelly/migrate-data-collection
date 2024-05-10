@@ -131,3 +131,8 @@ foreach ($vnetObject in $vnetObjects) {
 
 Write-Output "Processed subnets are:"
 $subnetObjects
+
+# Output the subnetObjects and gatewayIPObjects as properties of a PSCustomObject
+[PSCustomObject]@{
+    SubnetObjects = $subnetObjects
+}
