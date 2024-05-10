@@ -1,6 +1,3 @@
-# TODO: Check if the script is working as expected.
-# TODO: Check if vnetobjects are populating as expected.
-
 function Write-ErrorToFile {
     param (
         [string]$Message
