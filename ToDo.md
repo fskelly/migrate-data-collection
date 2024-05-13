@@ -9,5 +9,5 @@
   - [x] 3. Gateway and PIPs
     - [x] 1. VPN
     - [x] 2. ExR
-- [ ] 5. Storage Accounts
-- [ ] 6. Azure Migrate Appliances / Projects
+- [x] 5. Storage Accounts
+- [x] 6. Azure Migrate Appliances / Projects
