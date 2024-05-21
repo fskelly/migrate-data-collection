@@ -55,4 +55,4 @@ catch {
 $subscriptionObjects
 
 # Return the subscriptions object
-return $subscriptions
+return $subscriptionObjects
