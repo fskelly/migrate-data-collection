@@ -11,3 +11,6 @@
     - [x] 2. ExR
 - [x] 5. Storage Accounts
 - [x] 6. Azure Migrate Appliances / Projects
+
+Azure Migrate extras
+- [ ] Replicated VM more than 180 days old
